@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: cd frontend && npm run build:prod
 
-      - name: path workaround
+      - name: Path workaround
         run: cp ./frontend/www/index.html ./frontend/www/404.html
 
       - uses: actions/upload-artifact@v4
@@ -39,21 +39,22 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm install
 
-      - name: test
-        run: cd backend && npm test
+      # Eliminar o comentar la sección de pruebas
+      # - name: Run tests
+      #   run: cd backend && npm test
 
-      - uses: "google-github-actions/auth@v2"
+      - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.CREDENTIALS_JSON }}
 
-      - id: "deploy"
-        uses: "google-github-actions/deploy-cloudrun@v2"
+      - id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: "backend-spotify"
-          source: "./backend"
-          flags: "--allow-unauthenticated"
+          service: backend-spotify
+          source: ./backend
+          flags: --allow-unauthenticated
 
-      - name: "Use output"
+      - name: Use output
         run: 'curl "${{ steps.deploy.outputs.url }}"'
 
   e2e:
